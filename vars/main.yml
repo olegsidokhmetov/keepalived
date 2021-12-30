@@ -1,0 +1,5 @@
+---
+# vars file for keepalived
+
+lxc_CT_main: Nginx
+lxc_CT_backup: Nginx-bak

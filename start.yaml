@@ -1,0 +1,4 @@
+- hosts: keepalived_Nginx
+
+  roles:
+  - budimanjojo.keepalived

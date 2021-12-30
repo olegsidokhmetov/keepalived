@@ -1,0 +1,22 @@
+---
+
+instance_name: VI_1
+instance_state_NODE1: MASTER
+instance_state_NODE2: SLAVE
+instance_interface: eth1
+virtual_router_id: 51
+instance_priority_NODE1:: 101
+instance_priority_NODE2:: 100
+advert_int: 1
+auth_type: PASS
+auth_pass: pass
+virtual_ipaddress: 172.16.3.85
+
+keepalived_package_name: keepalived
+keepalived_service_name: keepalived
+keepalived_global_defs_options: {}
+keepalived_vrrp_scripts: []
+keepalived_vrrp_instances: []
+keepalived_virtual_servers: []
+keepalived_real_servers: []
+keepalived_vrrp_sync_groups: []

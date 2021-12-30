@@ -1,0 +1,60 @@
+---
+
+# - name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+#   apt:
+#     update_cache: yes
+#     cache_valid_time: 3600
+
+- name: Install dependencies
+  apt:
+    name: "{{ packages }}"
+    state: present
+    # update_cache: true
+  vars:
+    packages:
+      - apt-transport-https
+      - software-properties-common
+
+- name: Install the keepalived repository
+  apt_repository:
+    repo: ppa:keepalived/stable
+
+- name: Update cache 
+  command: apt-get update
+
+- name: Upgrade
+  shell: apt-get -y upgrade
+
+- name: Install keepalived on "{{ lxc_CT_main }}" and "{{ lxc_CT_backup }}"
+  apt:
+    name: "{{ keepalived_package_name }}"
+    state: latest
+  tags: keepalived
+  notify: restart keepalived
+
+- name: Create keepalived config file
+  template:
+    src: "etc/keepalived/keepalived.conf.j2"
+    dest: "/etc/keepalived/keepalived.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart keepalived
+  delegate_to: "{{ lxc_CT_main }}"
+
+- name: Create keepalived config file
+  template:
+    src: "etc/keepalived/keepalived.conf.bak.j2"
+    dest: "/etc/keepalived/keepalived.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart keepalived
+  delegate_to: "{{ lxc_CT_backup }}"
+
+
+- name: Ensure keepalived is enabled and started
+  service:
+    name: "{{ keepalived_service_name }}"
+    state: started
+    enabled: yes
